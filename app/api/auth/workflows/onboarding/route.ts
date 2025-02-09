@@ -1,5 +1,4 @@
 import { serve } from "@upstash/workflow/nextjs";
-import { sendEmail } from "./emailUtils";
 
 // Type-safety for starting our workflow
 interface InitialData {
@@ -12,9 +11,7 @@ export const { POST } = serve<InitialData>(async (context) => {
   const { userId, email, name } = context.requestPayload;
 
   // Step 1: Send welcome email
-  await context.run("send-welcome-email", async () => {
-    await sendEmail(email, "Welcome to our service!");
-  });
+  await context.run("send-welcome-email", async () => {});
 
   // Step 2: Wait for 3 days (in seconds)
   await context.sleep("sleep-until-follow-up", 60 * 60 * 24 * 3);
@@ -45,7 +42,5 @@ export const { POST } = serve<InitialData>(async (context) => {
   const personalizedMessage = aiResponse.choices[0].message.content;
 
   // Step 4: Send personalized follow-up email
-  await context.run("send-follow-up-email", async () => {
-    await sendEmail(email, personalizedMessage);
-  });
+  await context.run("send-follow-up-email", async () => {});
 });
